@@ -1,0 +1,51 @@
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "PremiumLoader"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 900, 0, 900)
+frame.Position = UDim2.new(0.5, -450, 0.5, -450)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(0, 800, 0, 350)
+textLabel.Position = UDim2.new(0.5, -350 + 10, 0.5, -175)
+textLabel.BackgroundTransparency = 1
+textLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+textLabel.TextXAlignment = Enum.TextXAlignment.Left
+textLabel.TextYAlignment = Enum.TextYAlignment.Top
+textLabel.Font = Enum.Font.Code
+textLabel.TextSize = 18
+textLabel.TextWrapped = true
+textLabel.Text = ""
+textLabel.Parent = frame
+
+local logs = {
+    "[NETWORK] Connecting to data node...",
+    "[NETWORK] Node found: 192.168.4.12",
+    "[NETWORK] Sending handshake request...",
+    "[AUTH] Session key granted.",
+    "[DOWNLOAD] Retrieving user memory package...",
+    "[DOWNLOAD] Chunk 1/5 complete (6.2 MB)",
+    "[DOWNLOAD] Chunk 2/5 complete (12.4 MB)",
+    "[DOWNLOAD] Chunk 3/5 complete (18.7 MB)",
+    "[DOWNLOAD] Chunk 4/5 complete (24.9 MB)",
+    "[DOWNLOAD] Chunk 5/5 complete (31.1 MB)",
+    "[CHECKSUM] Validating...",
+    "[INFO] Data download complete.",
+    "[INFO] Transfer to volatile storage...",
+    "[INFO] Transfer finished. Ready for execution.",
+    "[WAIT] Waiting area to run data...",
+    "[DATA] Loading data from player.",
+    "[DATA] Loading functions..."
+}
+
+for _, line in ipairs(logs) do
+    textLabel.Text = textLabel.Text .. line .. "\n"
+    task.wait(0.5)
+end
+
+frame:Destroy()
