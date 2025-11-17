@@ -1,0 +1,10 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/novelah9292-hash/Scriptpro/refs/heads/main/V1", true))()
+task.wait(1)
+
+local Load = function(url)
+    return loadstring(game:HttpGet(url))()
+end
+
+Load("https://raw.githubusercontent.com/novelah9292-hash/Scriptpro/refs/heads/main/V2")
+task.wait(5)
+Load("https://raw.githubusercontent.com/novelah9292-hash/Scriptpro/refs/heads/main/V3")
