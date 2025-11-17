@@ -1,0 +1,125 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Xóa GUI cũ
+if playerGui:FindFirstChild("Cac2DevVIPGUI") then
+    playerGui.Cac2DevVIPGUI:Destroy()
+end
+
+-- ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "Cac2DevVIPGUI"
+screenGui.Parent = playerGui
+
+-- Frame chính nhỏ gọn
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 250, 0, 120)
+frame.Position = UDim2.new(0.5, -125, 0.5, -60)
+frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+frame.AnchorPoint = Vector2.new(0.5,0.5)
+frame.Parent = screenGui
+frame.ClipsDescendants = true
+
+-- Bo tròn + neon
+local uicorner = Instance.new("UICorner")
+uicorner.CornerRadius = UDim.new(0,20)
+uicorner.Parent = frame
+
+local uistroke = Instance.new("UIStroke")
+uistroke.Thickness = 2
+uistroke.Color = Color3.fromRGB(0,255,200)
+uistroke.Parent = frame
+
+-- Gradient
+local uigradient = Instance.new("UIGradient")
+uigradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,128)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0,128,255))
+}
+uigradient.Rotation = 45
+uigradient.Parent = frame
+
+-- Label tác giả
+local authorLabel = Instance.new("TextLabel")
+authorLabel.Size = UDim2.new(1,-10,0,25)
+authorLabel.Position = UDim2.new(0,5,0,5)
+authorLabel.BackgroundTransparency = 1
+authorLabel.Text = "By : Cạc2Dev"
+authorLabel.TextColor3 = Color3.fromRGB(255,255,255)
+authorLabel.Font = Enum.Font.GothamBold
+authorLabel.TextSize = 18
+authorLabel.Parent = frame
+
+-- Label time
+local timeLabel = Instance.new("TextLabel")
+timeLabel.Size = UDim2.new(1,-10,0,25)
+timeLabel.Position = UDim2.new(0,5,0,40)
+timeLabel.BackgroundTransparency = 1
+timeLabel.TextColor3 = Color3.fromRGB(0,255,255)
+timeLabel.Font = Enum.Font.GothamBold
+timeLabel.TextSize = 16
+timeLabel.Text = "Time: 00:00:00"
+timeLabel.Parent = frame
+
+-- Label cảm ơn
+local thankLabel = Instance.new("TextLabel")
+thankLabel.Size = UDim2.new(1,-10,0,25)
+thankLabel.Position = UDim2.new(0,5,0,75)
+thankLabel.BackgroundTransparency = 1
+thankLabel.Text = "Thank for Use! 🇻🇳"
+thankLabel.TextColor3 = Color3.fromRGB(0,255,128)
+thankLabel.Font = Enum.Font.GothamBold
+thankLabel.TextSize = 16
+thankLabel.Parent = frame
+
+-- Kéo thả mượt
+local UserInputService = game:GetService("UserInputService")
+local dragging = false
+local dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
+
+-- Đồng hồ time reset 100h
+local startTime = tick()
+spawn(function()
+    while true do
+        local elapsed = tick() - startTime
+        if elapsed >= 100*3600 then
+            startTime = tick()
+            elapsed = 0
+        end
+        local h = math.floor(elapsed/3600)
+        local m = math.floor((elapsed%3600)/60)
+        local s = math.floor(elapsed%60)
+        timeLabel.Text = string.format("Time: %02d:%02d:%02d",h,m,s)
+        wait(1)
+    end
+end)
